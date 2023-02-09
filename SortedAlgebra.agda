@@ -2,7 +2,7 @@
 
 module SortedAlgebra {ℓ} where
 
-import Function 
+import Function
 open import Data.Fin using (Fin)
 open import Data.Nat using (ℕ)
 open import Data.Vec using (Vec; lookup)
@@ -70,7 +70,7 @@ record Σ-Rel {Σ} (A : Σ-Algebra Σ) (B : Σ-Algebra Σ) : Set (sucℓ ℓ) wh
       → ρ (A.F f as) (B.F f bs)
 
   op : Σ-Rel B A
-  op = record { ρ = flip ρ 
+  op = record { ρ = flip ρ
               ; ρ-homo = λ f → ρ-homo f ∘ VecT.op
               }
 
@@ -105,3 +105,23 @@ module Term (Σ : Signature) where
   _∘_ : ∀ {n m o} {A : Ctx n} {B : Ctx m} {C : Ctx o}
       → Subst B C → Subst A B → Subst A C
   (f ∘ g) i = sub f (g i)
+
+  Assignment : ∀ {n} → (Γ : Ctx n) → (A : Σ-Algebra Σ) → Set ℓ
+  Assignment Γ A = mapT A.S Γ
+    where module A = Σ-Algebra A
+
+  module _ (A : Σ-Algebra Σ) where
+
+    module A = Σ-Algebra A
+
+    interpret : ∀ {n t s} {Γ : Ctx n}
+              → Assignment Γ A
+              → Γ ⊢ t ⟨ s ⟩
+              → A.S t
+    interpret μ (var i) = VecT.lookup i μ
+    interpret μ (fun f x) = A.F f (map (interpret μ) x)
+
+  lift : ∀ {A B : Σ-Algebra Σ} {n} {Γ : Ctx n}
+       → Σ-Rel A B
+       → REL (Assignment Γ A) (Assignment Γ B) ℓ
+  lift R μ₁ μ₂ = zip (Σ-Rel.ρ R) μ₁ μ₂

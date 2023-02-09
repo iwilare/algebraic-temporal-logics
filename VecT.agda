@@ -107,4 +107,4 @@ op : ∀ {v : Vec A n} {f g : (A → Set ℓ)} {x : mapT f v} {y : mapT g v}
     → zip f        x y
     → zip (flip f) y x
 op {v = []} * = *
-op {v = _ ∷ _} (x , xs) = x , op xs 
+op {v = _ ∷ _} (x , xs) = x , op xs

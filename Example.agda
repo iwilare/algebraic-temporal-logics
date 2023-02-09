@@ -1,9 +1,8 @@
 {-# OPTIONS --sized-types #-}
 
 open import SortedAlgebra
-open import Counterpart.Categorical.TemporalModel
 
-module Counterpart.Categorical.QLTL.Example where
+module Example where
 
 open import Data.Nat
 
@@ -168,13 +167,20 @@ f f₂ = F₂
 f f₃ = F₃
 
 open import QLTL
-open import Counterpart.Classical
-open import Counterpart.ClassicalToCategorical
-open import Counterpart.Categorical.TemporalStructure
+open import CounterpartModel
+
+--open import Counterpart.Classical
+--open import Counterpart.ClassicalToCategorical
+--open import Counterpart.Categorical.TemporalStructure
 
 M : CounterpartModel Gr
 M = record { W = W ; d = d ; _⇝_ = _⇝_ ; f = f }
 
+open Signature Gr
+open SortedAlgebra.Term Gr
+open Semantics M
+
+{-
 TWM : TemporalCounterpartWModel Gr
 TWM = ClassicalToCategorical M
 
@@ -426,3 +432,4 @@ exampleEventuallyHasLoop =
                               in u1 , ((n4 , up , n0n4) , *) , * })
                     , p
                     , ((n4 , k , n0n4) , *) , m
+-}

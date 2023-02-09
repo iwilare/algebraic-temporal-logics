@@ -2,7 +2,7 @@
 
 open import SortedAlgebra using (Signature)
 
-module QLTL {ℓ} {Σ : Signature {ℓ}} where
+module QLTL {ℓ} (Σ : Signature {ℓ}) where
 
 open import Data.Vec using (_∷_)
 

@@ -1,0 +1,3 @@
+name: algebraic-temporal-logics
+depend: standard-library-1.7.1
+include: .
