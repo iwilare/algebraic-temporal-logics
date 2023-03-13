@@ -9,8 +9,10 @@ open import Data.Vec using (Vec; lookup)
 open import Level using () renaming (suc to sucℓ)
 open import Relation.Binary using (REL)
 open import Size
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Data.Product using (∃-syntax; _×_; _,_)
 
-open import VecT using (zip; mapT; map)
+open import VecT using (zip; mapT; map; zip-ext; zip-rel-decomp)
 
 record FunctionSignature (𝓢 : Set ℓ) : Set ℓ where
   constructor _↦_
@@ -54,7 +56,6 @@ record Σ-Algebra (Σ : Signature) : Set (sucℓ ℓ) where
 record Σ-Rel {Σ} (A : Σ-Algebra Σ) (B : Σ-Algebra Σ) : Set (sucℓ ℓ) where
 
   open Signature Σ
-  open Function using (_∘_; flip)
 
   private
     module A = Σ-Algebra A
@@ -72,7 +73,22 @@ record Σ-Rel {Σ} (A : Σ-Algebra Σ) (B : Σ-Algebra Σ) : Set (sucℓ ℓ) wh
   op : Σ-Rel B A
   op = record { ρ = flip ρ
               ; ρ-homo = λ f → ρ-homo f ∘ VecT.op
-              }
+              } where open Function using (_∘_; flip)
+
+rel-id : ∀ {Σ} {A : Σ-Algebra Σ} → Σ-Rel A A
+rel-id {A = A} = record
+  { ρ = _≡_
+  ; ρ-homo = λ F as≡bs → cong (Σ-Algebra.F A F) (zip-ext as≡bs)
+  }
+
+_;_ : ∀ {Σ : Signature} {A B C : Σ-Algebra Σ} → Σ-Rel A B → Σ-Rel B C → Σ-Rel A C
+R ; R′ = record { ρ = λ a c → ∃[ b ] (R.ρ a b × R′.ρ b c)
+                ; ρ-homo = λ 𝓕 x → let a , b , c = zip-rel-decomp x
+                                    in _ , R.ρ-homo 𝓕 b , R′.ρ-homo 𝓕 c
+                }
+  where
+    module R  = Σ-Rel R
+    module R′ = Σ-Rel R′
 
 module Term (Σ : Signature) where
 

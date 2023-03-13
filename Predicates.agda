@@ -1,6 +1,6 @@
 {-# OPTIONS --sized-types #-}
 
-module Counterpart.Categorical.QLTL.Predicates where
+module Predicates where
 
 open import Data.Nat using (ℕ; _<_)
 open import Data.Product using (∃-syntax; _×_)
@@ -22,7 +22,6 @@ always A = ∀ i → i ∈ A
 -- Either until or always hold
 _weakUntil_ : ∀ {ℓ} (A B : Pred ℕ ℓ) → Set ℓ
 A weakUntil B = A until B ⊎ always A
-
 
 -- There exists a step after which A is satisfied
 eventually : ∀ {ℓ} (A : Pred ℕ ℓ) → Set ℓ

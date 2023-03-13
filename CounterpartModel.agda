@@ -6,7 +6,7 @@ open import Level using () renaming (suc to sucℓ)
 open import Relation.Binary using (REL; Rel)
 open import Data.Nat using (ℕ; suc; zero)
 
-open import SortedAlgebra using (Signature; Σ-Algebra; Σ-Rel)
+open import SortedAlgebra using (Signature; Σ-Algebra; Σ-Rel; rel-id; _;_)
 
 record LewisCounterpartModel : Set (sucℓ ℓ) where
   field
@@ -22,7 +22,7 @@ record CounterpartModel (Σ : Signature {ℓ}) : Set (sucℓ ℓ)  where
     W : Set ℓ
     d : W → Σ-Algebra {ℓ} Σ
     _⇝_ : Rel W ℓ
-    f : ∀ {w₁ w₂}
+    𝓒 : ∀ {w₁ w₂}
       → w₁ ⇝ w₂
       → Σ-Rel (d w₁) (d w₂)
 
@@ -41,22 +41,32 @@ module _ {Σ : Signature {ℓ}} (M : CounterpartModel Σ) where
         → p n ⇝ p (ℕ.suc n)
 
   record CounterpartTrace (A : W) : Set (sucℓ ℓ) where
+    constructor _⇀_
     coinductive
     field
       {B} : W
       rel  : A ⇝ B
       tail : CounterpartTrace B
 
-    Σ-rel = f rel
+    Σ-rel = 𝓒 rel
 
   open CounterpartTrace public
 
+module _ {Σ : Signature {ℓ}} {M : CounterpartModel Σ} where
+  open CounterpartModel M
+
+  open CounterpartTrace
+
   -- World of the trace after i steps
-  wi : ∀ {A} → ℕ → CounterpartTrace A → W
+  wi : ∀ {A} → ℕ → CounterpartTrace M A → W
   wi {A} zero T = A
   wi (suc n) T = wi n (tail T)
 
   -- Suffix of a trace
-  s : ∀ {A} → (n : ℕ) → (σ : CounterpartTrace A) → CounterpartTrace (wi n σ)
-  s zero T = T
-  s (suc n) T = s n (tail T)
+  skip : ∀ {A} → (n : ℕ) → (σ : CounterpartTrace M A) → CounterpartTrace M (wi n σ)
+  skip zero T = T
+  skip (suc n) T = skip n (tail T)
+
+  C≤ : ∀ {A} → (n : ℕ) → (σ : CounterpartTrace M A) → Σ-Rel (d A) (d (wi n σ))
+  C≤ zero σ = rel-id
+  C≤ (suc n) σ = 𝓒 (rel σ) ; C≤ n (tail σ)
