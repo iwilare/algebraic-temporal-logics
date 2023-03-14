@@ -108,3 +108,10 @@ op : ∀ {v : Vec A n} {f g : (A → Set ℓ)} {x : mapT f v} {y : mapT g v}
     → zip (flip f) y x
 op {v = []} * = *
 op {v = _ ∷ _} (x , xs) = x , op xs
+
+↑ = zip
+
+_[_] : mapT f v
+     → (i : Fin n)
+     → f (Vec.lookup v i)
+v [ i ] = lookup i v
