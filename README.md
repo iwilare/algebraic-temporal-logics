@@ -1,15 +1,8 @@
-## Categorical semantics for counterpart-based temporal logics
+# Algebraic Temporal Logics
 
-This repository contains the Agda presentation of the categorical semantics for a quantified linear temporal logic QLTL based on counterpart semantics in the sense of Lewis.
-
-We use the [agda-categories](https://github.com/agda/agda-categories) library as a practical foundation to construct the models of our logic by means of relational presheaves.
-
-## Positive normal form
-
-Some results on a positive normal form of this logic in the case of linear trace-like models can be found at [https://github.com/iwilare/qltl-pnf/](https://github.com/iwilare/qltl-pnf/).
+This repository contains the Agda presentation of a quantified linear temporal logic QLTL which can reason on the temporal evolution of any multi-sorted algebra. The logic is based on the counterpart paradigm (in the sense of Lewis) to capture the evolution of individual elements of the algebraic structure between worlds/instants of time.
 
 ## Requirements
 
-- `agda-categories` 1.7
-- `agda-stdlib` 1.7.1
 - `agda` 2.6.2.2
+- `agda-stdlib` 1.7.1
